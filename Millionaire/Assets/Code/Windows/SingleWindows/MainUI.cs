@@ -7,19 +7,16 @@ using System.Collections;
 public class MainUI : SingletonWindow<MainUI>
 {
     /// <summary>
-    /// 背景1
+    /// 背景
     /// </summary>
-    private Transform m_tfBg01;
+    private Transform[] m_tfBg = new Transform[2];
     
-    /// <summary>
-    /// 背景2
-    /// </summary>
-    private Transform m_tfBg02;
-
     void Start()
     {
-        m_tfBg01 = Util.FindCo<Transform>(gameObject, "bg01");
-        m_tfBg02 = Util.FindCo<Transform>(gameObject, "bg02");
+        for (int i = 0; i < 2; i++)
+        {
+            m_tfBg[i] = Util.FindCo<Transform>(gameObject, "bg0" + i);
+        }
     }
 
     public override void OnShow()
@@ -39,13 +36,12 @@ public class MainUI : SingletonWindow<MainUI>
     /// </summary>
     private void StartScroll()
     {
-        Vector3 tmpPos = m_tfBg01.localPosition;
-        tmpPos.x = 0.00f;
-        m_tfBg01.localPosition = tmpPos;
-
-        tmpPos = m_tfBg02.localPosition;
-        tmpPos.x = 958.00f;
-        m_tfBg02.localPosition = tmpPos;
+        Vector3 tmpPos;
+        for (int i = 0; i < 1; i++)
+        {
+            tmpPos = m_tfBg[i].localPosition;
+            tmpPos.x = i * 2.87f;
+        }
 
         StopCoroutine("ScrollBkg");
         StartCoroutine("ScrollBkg");
@@ -61,21 +57,33 @@ public class MainUI : SingletonWindow<MainUI>
         {
             yield return new WaitForEndOfFrame();
 
-            Vector3 tmpPos = m_tfBg01.localPosition;
-            tmpPos.x -= 5.00f;
-            if (tmpPos.x < -958.00f)
+            Vector3 tmpPos;
+            if (m_tfBg[0].localPosition.x > m_tfBg[1].localPosition.x)
             {
-                tmpPos.x = 958.00f;
+                Transform tmpTf = m_tfBg[0];
+                m_tfBg[0] = m_tfBg[1];
+                m_tfBg[1] = tmpTf;
             }
-            m_tfBg01.localPosition = tmpPos;
 
-            tmpPos = m_tfBg02.localPosition;
-            tmpPos.x -= 5.00f;
-            if (tmpPos.x < -958.00f)
+            tmpPos = m_tfBg[0].localPosition;
+
+            tmpPos.x -= 0.02f;
+
+            if (tmpPos.x < -2.87f)
             {
-                tmpPos.x = 958.00f;
+                tmpPos = m_tfBg[1].localPosition;
+                tmpPos.x -= 0.02f;
+
+                m_tfBg[1].localPosition = tmpPos;
+                tmpPos.x += 2.87f;
+                m_tfBg[0].localPosition = tmpPos;
             }
-            m_tfBg02.localPosition = tmpPos;
+            else
+            {
+                m_tfBg[0].localPosition = tmpPos;
+                tmpPos.x += 2.87f;
+                m_tfBg[1].localPosition = tmpPos;
+            }
 
             if (this.IsVisible == false)
             {
