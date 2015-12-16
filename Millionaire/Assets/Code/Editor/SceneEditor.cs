@@ -76,7 +76,11 @@ public class SceneEditor : EditorWindow
             return false;
         }
 
+#if OLD
         sprites.Sort(SortCmp);
+#else
+        SortSpriteRender(sprites);
+#endif
 
         m_listSceneItem.Clear();
 
@@ -126,20 +130,20 @@ public class SceneEditor : EditorWindow
     /// </summary>
     private void DoWork()
     {
-        SceneCell pre,now;
+        SceneCell pre, now;
 
         for (int i = 0, imax = m_listSceneItem.Count; i < imax; i++)
         {
             for (int j = 0, jmax = m_listSceneItem[i].m_listSceneCells.Count; j < jmax; j++)
             {
-                if (i == 0 
+                if (i == 0
                     && j == 0)
                 {
                     continue;
                 }
 
                 now = m_listSceneItem[i].m_listSceneCells[j];
-                
+
                 if (j == 0)
                 {
                     pre = m_listSceneItem[i - 1].m_listSceneCells[0];
@@ -158,8 +162,11 @@ public class SceneEditor : EditorWindow
         }
     }
 
+#if OLD
+
     /// <summary>
-    /// 排序方式
+    /// <para>排序方式</para>
+    /// <para>排序有些不稳定，暂时不用</para>
     /// </summary>
     /// <param name="sprite1"></param>
     /// <param name="sprite2"></param>
@@ -170,8 +177,7 @@ public class SceneEditor : EditorWindow
 
         if (Mathf.Abs(sprite1.transform.position.x - sprite2.transform.position.x) < EPS)
         {
-            Debug.LogError("aaa");
-            if (sprite1.transform.position.y >= sprite2.transform.position.y)
+            if (sprite1.transform.position.y <= sprite2.transform.position.y)
             {
                 iRet = -1;
             }
@@ -191,6 +197,59 @@ public class SceneEditor : EditorWindow
 
         return iRet;
     }
+#else
+
+    /// <summary>
+    /// 是否是大于
+    /// </summary>
+    /// <param name="sprite1"></param>
+    /// <param name="sprite2"></param>
+    /// <returns></returns>
+    private bool IsBig(SpriteRenderer sprite1, SpriteRenderer sprite2)
+    {
+        if (Mathf.Abs(sprite1.transform.position.x - sprite2.transform.position.x) < EPS)
+        {
+            if (sprite1.transform.position.y > sprite2.transform.position.y)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        if (sprite1.transform.position.x > sprite2.transform.position.x)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    /// <summary>
+    /// 排序
+    /// </summary>
+    /// <param name="list"></param>
+    private void SortSpriteRender(List<SpriteRenderer> list)
+    {
+        SpriteRenderer tmp;
+
+        for (int i = 0, imax = list.Count - 1; i < imax; i++)
+        {
+            for (int j = 0, jmax = list.Count - i - 1; j < jmax; j++)
+            {
+                if (IsBig(list[j], list[j + 1]))
+                {
+                    tmp = list[j];
+                    list[j] = list[j + 1];
+                    list[j + 1] = tmp;
+                }
+            }
+        }
+    }
+
+#endif
 
     /// <summary>
     /// 场景背景小块
