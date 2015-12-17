@@ -147,13 +147,13 @@ public class SceneEditor : EditorWindow
                 if (j == 0)
                 {
                     pre = m_listSceneItem[i - 1].m_listSceneCells[0];
-                    now.m_vtPosition.y = pre.m_vtPosition.y - pre.m_vtSize.y * 0.5f * pre.m_tfTransform.lossyScale.y + now.m_vtSize.y * 0.5f * now.m_tfTransform.lossyScale.y;
-                    now.m_vtPosition.x = pre.m_vtPosition.x + pre.m_vtSize.x * 0.5f * pre.m_tfTransform.lossyScale.x + now.m_vtSize.x * 0.5f * now.m_tfTransform.lossyScale.x - EPS2 * now.m_tfTransform.lossyScale.x;
+                    now.m_vtPosition.y = pre.m_vtPosition.y - pre.m_vtSize.y * 0.5f * Mathf.Abs(pre.m_tfTransform.lossyScale.y) + now.m_vtSize.y * 0.5f * Mathf.Abs(now.m_tfTransform.lossyScale.y);
+                    now.m_vtPosition.x = pre.m_vtPosition.x + pre.m_vtSize.x * 0.5f * Mathf.Abs(pre.m_tfTransform.lossyScale.x) + now.m_vtSize.x * 0.5f * Mathf.Abs(now.m_tfTransform.lossyScale.x) - EPS2 * Mathf.Abs(now.m_tfTransform.lossyScale.x);
                 }
                 else
                 {
                     pre = m_listSceneItem[i].m_listSceneCells[j - 1];
-                    now.m_vtPosition.y = pre.m_vtPosition.y + pre.m_vtSize.y * 0.5f * pre.m_tfTransform.lossyScale.y + now.m_vtSize.y * 0.5f * now.m_tfTransform.lossyScale.y - EPS2 * now.m_tfTransform.lossyScale.y;
+                    now.m_vtPosition.y = pre.m_vtPosition.y + pre.m_vtSize.y * 0.5f * Mathf.Abs(pre.m_tfTransform.lossyScale.y) + now.m_vtSize.y * 0.5f * Mathf.Abs(now.m_tfTransform.lossyScale.y) - EPS2 * Mathf.Abs(now.m_tfTransform.lossyScale.y);
                     now.m_vtPosition.x = pre.m_vtPosition.x;
                 }
 
